@@ -1,0 +1,849 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Plan Intensif Anglais B1 → C1</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Visualization & Content Choices:
+        - Overall Structure: HTML text. Goal: Inform.
+        - Vocabulary Targets: Chart.js bar chart. Goal: Inform, Compare. Interaction: Hover.
+        - Daily Schedule: Accordion. Goal: Organize, Inform. Interaction: Click to expand.
+        - Resources/Tips: Accordion lists. Goal: Inform, Explain. Interaction: Click to expand.
+        - Tables (Planning): HTML tables. Goal: Organize.
+        - ✨ Gemini - Assistant Vocabulaire: Text input + Button. Goal: Explain, Provide Context. Interaction: User input, click. Output: Text (definitions, examples). Library: Gemini API.
+        - ✨ Gemini - Lanceur de Conversation: Optional text input + Button. Goal: Suggest, Inspire. Interaction: User input/click. Output: Text (topics, questions). Library: Gemini API.
+        - Justification: Prioritizes clarity and interactive exploration. Gemini integrations offer personalized learning aids directly within the relevant context of the user's study plan.
+        - CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+        .tab-button.active {
+            border-bottom-width: 2px;
+        }
+        .accordion-content { max-height: 0; overflow: hidden; transition: max-height 0.3s ease-out; }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 300px;
+            max-height: 400px;
+        }
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1; /* slate-300 */
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8; /* slate-500 */
+        }
+        .gemini-response {
+            white-space: pre-wrap;
+            background-color: #f9fafb; /* bg-gray-50 */
+            border: 1px solid #e5e7eb; /* border-gray-200 */
+            padding: 1rem;
+            border-radius: 0.375rem; /* rounded-md */
+            margin-top: 0.75rem; /* mt-3 */
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        .loading-spinner {
+            border: 4px solid rgba(0, 0, 0, 0.1);
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            border-left-color: #059669; /* emerald-600 */
+            animation: spin 1s ease infinite;
+            display: inline-block;
+            margin-right: 8px;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body class="bg-stone-100 text-stone-800">
+
+    <div class="container mx-auto max-w-6xl p-4 sm:p-6 lg:p-8">
+        <header class="text-center mb-8">
+            <h1 class="text-4xl font-bold text-teal-700">Programme Intensif Anglais B1 → C1 (8 Semaines)</h1>
+            <p class="text-stone-600 mt-2">Votre guide interactif pour atteindre vos objectifs linguistiques, maintenant avec l'aide de l'IA !</p>
+        </header>
+
+        <nav class="mb-8 border-b border-stone-300">
+            <ul class="flex flex-wrap -mb-px text-sm font-medium text-center" id="tabContainer">
+                <li class="mr-2">
+                    <button class="tab-button inline-block p-4 border-b-2 border-transparent rounded-t-lg hover:text-teal-600 hover:border-teal-300 active text-sky-600 border-sky-600" data-tab="overview">Vue d'Ensemble</button>
+                </li>
+                <li class="mr-2">
+                    <button class="tab-button inline-block p-4 border-b-2 border-transparent rounded-t-lg hover:text-teal-600 hover:border-teal-300" data-tab="weeks1-2" data-level="B1+">Semaines 1-2</button>
+                </li>
+                <li class="mr-2">
+                    <button class="tab-button inline-block p-4 border-b-2 border-transparent rounded-t-lg hover:text-teal-600 hover:border-teal-300" data-tab="weeks3-4" data-level="B2">Semaines 3-4</button>
+                </li>
+                <li class="mr-2">
+                    <button class="tab-button inline-block p-4 border-b-2 border-transparent rounded-t-lg hover:text-teal-600 hover:border-teal-300" data-tab="weeks5-6" data-level="B2 vers C1">Semaines 5-6</button>
+                </li>
+                <li class="mr-2">
+                    <button class="tab-button inline-block p-4 border-b-2 border-transparent rounded-t-lg hover:text-teal-600 hover:border-teal-300" data-tab="weeks7-8" data-level="C1">Semaines 7-8</button>
+                </li>
+                <li class="mr-2">
+                    <button class="tab-button inline-block p-4 border-b-2 border-transparent rounded-t-lg hover:text-teal-600 hover:border-teal-300" data-tab="planning">Planning Type</button>
+                </li>
+                <li>
+                    <button class="tab-button inline-block p-4 border-b-2 border-transparent rounded-t-lg hover:text-teal-600 hover:border-teal-300" data-tab="evaluation">Évaluation</button>
+                </li>
+            </ul>
+        </nav>
+
+        <main id="tabContentContainer" class="space-y-6">
+            <section id="overview" class="tab-content active p-6 bg-white rounded-lg shadow">
+                <h2 class="text-2xl font-semibold text-teal-700 mb-4">Vue d'Ensemble du Programme</h2>
+                <p class="mb-6 text-stone-700">Bienvenue dans votre programme intensif de 8 semaines pour passer du niveau B1 au C1 en anglais. Cette section vous donne un aperçu général des outils, méthodes et conseils qui vous accompagneront, ainsi qu'une visualisation de vos objectifs de vocabulaire. Explorez les différents onglets pour découvrir le détail de chaque phase du programme. Les nouvelles fonctionnalités ✨ IA sont là pour vous aider à chaque étape !</p>
+
+                <div class="grid md:grid-cols-2 gap-6 mb-8">
+                    <div>
+                        <h3 class="text-xl font-semibold text-teal-600 mb-3">📈 Objectifs de Vocabulaire par Phase</h3>
+                        <p class="text-sm text-stone-600 mb-3">Le graphique ci-dessous illustre le nombre de nouveaux mots que vous visez à apprendre chaque semaine, par phase de deux semaines. Un vocabulaire riche est essentiel pour atteindre le niveau C1.</p>
+                        <div class="chart-container bg-stone-50 p-4 rounded-md">
+                            <canvas id="vocabChart"></canvas>
+                        </div>
+                    </div>
+                    <div>
+                        <h3 class="text-xl font-semibold text-teal-600 mb-3">🛠️ Outils et Méthodes Transversaux</h3>
+                        <p class="text-sm text-stone-600 mb-3">Ces outils et techniques sont fondamentaux et doivent être intégrés à votre routine quotidienne pour maximiser votre apprentissage.</p>
+                        <div class="space-y-3">
+                            <div>
+                                <button class="accordion-button w-full text-left p-3 bg-sky-500 text-white rounded-md hover:bg-sky-600 transition flex justify-between items-center">
+                                    <span>Applications Essentielles</span>
+                                    <span class="transform transition-transform duration-300 ">▼</span>
+                                </button>
+                                <div class="accordion-content bg-stone-50 p-4 rounded-b-md border border-t-0 border-stone-200">
+                                    <ul class="list-disc list-inside space-y-2 text-stone-700">
+                                        <li><strong>Anki:</strong> Répétition espacée pour le vocabulaire. <a href="https://apps.ankiweb.net/" target="_blank" class="text-sky-600 hover:underline">Visiter</a></li>
+                                        <li><strong>Grammarly:</strong> Correction et amélioration de l'écriture. <a href="https://www.grammarly.com/" target="_blank" class="text-sky-600 hover:underline">Visiter</a></li>
+                                        <li><strong>Speechling:</strong> Correction de la prononciation. <a href="https://speechling.com/" target="_blank" class="text-sky-600 hover:underline">Visiter</a></li>
+                                        <li><strong>News in Slow English:</strong> Compréhension progressive. <a href="https://www.newsinslowenglish.com/" target="_blank" class="text-sky-600 hover:underline">Visiter</a></li>
+                                        <li><strong>HelloTalk / Tandem:</strong> Conversation avec partenaires. <a href="https://www.hellotalk.com/" target="_blank" class="text-sky-600 hover:underline">HelloTalk</a>, <a href="https://www.tandem.net/" target="_blank" class="text-sky-600 hover:underline">Tandem</a></li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div>
+                                <button class="accordion-button w-full text-left p-3 bg-sky-500 text-white rounded-md hover:bg-sky-600 transition flex justify-between items-center">
+                                    <span>Techniques d'Apprentissage</span>
+                                    <span class="transform transition-transform duration-300 ">▼</span>
+                                </button>
+                                <div class="accordion-content bg-stone-50 p-4 rounded-b-md border border-t-0 border-stone-200">
+                                    <ul class="list-disc list-inside space-y-2 text-stone-700">
+                                        <li><strong>Shadowing:</strong> Répéter simultanément avec des locuteurs natifs.</li>
+                                        <li><strong>Note-taking (Cornell method):</strong> Prise de notes structurée. Recherchez "Cornell Note Taking Method" sur YouTube.</li>
+                                        <li><strong>Mind mapping:</strong> Organiser le vocabulaire par thèmes.</li>
+                                        <li><strong>Immersion digitale:</strong> Changer la langue de vos appareils en anglais.</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div>
+                    <h3 class="text-xl font-semibold text-teal-600 mb-3">💡 Conseils pour Maximiser les Résultats</h3>
+                    <p class="text-sm text-stone-600 mb-3">Adopter de bonnes habitudes et stratégies est crucial pour réussir ce programme intensif.</p>
+                    <div class="grid sm:grid-cols-2 gap-4">
+                        <div>
+                            <button class="accordion-button w-full text-left p-3 bg-amber-500 text-white rounded-md hover:bg-amber-600 transition flex justify-between items-center">
+                                <span>Organisation</span>
+                                <span class="transform transition-transform duration-300 ">▼</span>
+                            </button>
+                            <div class="accordion-content bg-stone-50 p-4 rounded-b-md border border-t-0 border-stone-200">
+                                <ul class="list-disc list-inside space-y-1 text-stone-700">
+                                    <li>Créez un environnement d'étude dédié.</li>
+                                    <li>Utilisez un timer Pomodoro (25min travail, 5min pause).</li>
+                                    <li>Tenez un journal de progression en anglais.</li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div>
+                            <button class="accordion-button w-full text-left p-3 bg-amber-500 text-white rounded-md hover:bg-amber-600 transition flex justify-between items-center">
+                                <span>Motivation</span>
+                                <span class="transform transition-transform duration-300 ">▼</span>
+                            </button>
+                            <div class="accordion-content bg-stone-50 p-4 rounded-b-md border border-t-0 border-stone-200">
+                                <ul class="list-disc list-inside space-y-1 text-stone-700">
+                                    <li>Fixez des objectifs quotidiens mesurables.</li>
+                                    <li>Récompensez-vous après chaque semaine complétée.</li>
+                                    <li>Trouvez un partenaire d'étude ou un groupe de conversation.</li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div>
+                            <button class="accordion-button w-full text-left p-3 bg-amber-500 text-white rounded-md hover:bg-amber-600 transition flex justify-between items-center">
+                                <span>Immersion</span>
+                                <span class="transform transition-transform duration-300 ">▼</span>
+                            </button>
+                            <div class="accordion-content bg-stone-50 p-4 rounded-b-md border border-t-0 border-stone-200">
+                                <ul class="list-disc list-inside space-y-1 text-stone-700">
+                                    <li>Écoutez de l'anglais pendant les transports.</li>
+                                    <li>Lisez les actualités uniquement en anglais.</li>
+                                    <li>Pensez en anglais dès que possible.</li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div>
+                            <button class="accordion-button w-full text-left p-3 bg-amber-500 text-white rounded-md hover:bg-amber-600 transition flex justify-between items-center">
+                                <span>Suivi des Progrès</span>
+                                <span class="transform transition-transform duration-300 ">▼</span>
+                            </button>
+                            <div class="accordion-content bg-stone-50 p-4 rounded-b-md border border-t-0 border-stone-200">
+                                <ul class="list-disc list-inside space-y-1 text-stone-700">
+                                    <li>Enregistrez-vous chaque semaine pour noter l'amélioration.</li>
+                                    <li>Notez les nouveaux mots appris (objectif : 2000 mots en 8 semaines).</li>
+                                    <li>Passez un test de niveau toutes les 2 semaines.</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="weeks1-2" class="tab-content p-6 bg-white rounded-lg shadow" data-level-text="B1+">
+                <h2 class="text-2xl font-semibold text-teal-700 mb-4">Semaines 1-2 : Consolidation B1+ et Transition B2</h2>
+                <p class="mb-4 text-stone-700">Cette première phase de deux semaines est cruciale. Elle vise à solidifier vos bases du niveau B1 et à vous introduire en douceur aux complexités du niveau B2. Concentrez-vous sur la régularité et l'assimilation active du nouveau vocabulaire et des structures grammaticales.</p>
+                <div class="mb-6 p-4 bg-sky-50 border border-sky-200 rounded-md">
+                    <h3 class="text-lg font-semibold text-sky-700 mb-2">🎯 Objectifs des Semaines 1-2 :</h3>
+                    <ul class="list-disc list-inside text-stone-700">
+                        <li>Maîtriser parfaitement les structures B1.</li>
+                        <li>Introduire la complexité grammaticale B2.</li>
+                        <li>Vocabulaire : 200 nouveaux mots par semaine (total 400).</li>
+                    </ul>
+                </div>
+
+                <h3 class="text-xl font-semibold text-teal-600 mb-3">Programme Quotidien (3h/jour)</h3>
+                <div class="space-y-3">
+                    <div>
+                        <button class="accordion-button w-full text-left p-3 bg-teal-500 text-white rounded-md hover:bg-teal-600 transition flex justify-between items-center">
+                            <span>Heure 1 - Compréhension/Vocabulaire</span>
+                            <span class="transform transition-transform duration-300 ">▼</span>
+                        </button>
+                        <div class="accordion-content bg-stone-50 p-4 rounded-b-md border border-t-0 border-stone-200 text-stone-700 space-y-2">
+                            <p><strong>30min :</strong> Lecture d'articles de presse (BBC News, The Guardian - niveau intermédiaire).
+                                <a href="https://www.bbc.com/news" target="_blank" class="text-sky-600 hover:underline ml-1">BBC</a>,
+                                <a href="https://www.theguardian.com/international" target="_blank" class="text-sky-600 hover:underline ml-1">Guardian</a>,
+                                <a href="https://www.npr.org/sections/news/" target="_blank" class="text-sky-600 hover:underline ml-1">NPR</a>.
+                            </p>
+                            <p><strong>20min :</strong> Écoute de podcasts éducatifs (6 Minute English, All Ears English).
+                                <a href="https://www.bbc.co.uk/learningenglish/english/features/6-minute-english" target="_blank" class="text-sky-600 hover:underline ml-1">6 Min Eng</a>,
+                                <a href="https://allearsenglish.com/episodes/" target="_blank" class="text-sky-600 hover:underline ml-1">All Ears</a>.
+                            </p>
+                            <p><strong>10min :</strong> Apprentissage de 15 nouveaux mots avec Anki ou Quizlet.
+                                <a href="https://quizlet.com/" target="_blank" class="text-sky-600 hover:underline ml-1">Quizlet</a>.
+                            </p>
+                            <div class="mt-4 p-3 bg-emerald-50 border border-emerald-200 rounded-md">
+                                <h4 class="font-semibold text-emerald-700 mb-2">✨ Assistant Vocabulaire (IA)</h4>
+                                <p class="text-sm text-emerald-600 mb-2">Entrez des mots nouveaux (séparés par des virgules) pour obtenir des exemples et explications.</p>
+                                <textarea class="w-full p-2 border border-stone-300 rounded-md mb-2" rows="2" placeholder="Ex: crucial, assimilate, enhance"></textarea>
+                                <button class="gemini-vocab-button bg-emerald-500 hover:bg-emerald-600 text-white font-semibold py-2 px-4 rounded-md transition w-full sm:w-auto">
+                                    Obtenir de l'aide avec ces mots
+                                </button>
+                                <div class="gemini-response-area mt-2 text-sm"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div>
+                        <button class="accordion-button w-full text-left p-3 bg-teal-500 text-white rounded-md hover:bg-teal-600 transition flex justify-between items-center">
+                            <span>Heure 2 - Expression</span>
+                             <span class="transform transition-transform duration-300 ">▼</span>
+                        </button>
+                        <div class="accordion-content bg-stone-50 p-4 rounded-b-md border border-t-0 border-stone-200 text-stone-700 space-y-2">
+                            <p><strong>30min :</strong> Rédaction quotidienne (journal personnel, résumés d'articles).</p>
+                            <p><strong>20min :</strong> Pratique orale (enregistrement de monologues de 3-5 minutes sur des sujets comme "My last weekend", "My favorite hobby").</p>
+                            <p><strong>10min :</strong> Grammaire avancée (temps narratifs, voix passive complexe). Livre suggéré: *Cambridge English Grammar in Use (Intermediate)*. Sujets: Present Perfect Simple/Continuous, Past Perfect, Future forms, Passive Voice (simple forms).</p>
+                        </div>
+                    </div>
+                    <div>
+                        <button class="accordion-button w-full text-left p-3 bg-teal-500 text-white rounded-md hover:bg-teal-600 transition flex justify-between items-center">
+                            <span>Heure 3 - Pratique ciblée</span>
+                            <span class="transform transition-transform duration-300 ">▼</span>
+                        </button>
+                        <div class="accordion-content bg-stone-50 p-4 rounded-b-md border border-t-0 border-stone-200 text-stone-700 space-y-2">
+                            <p>Exercices de grammaire B2 (avec *Cambridge English Grammar in Use*).</p>
+                            <p>Conversation avec IA (ex: Character.ai) ou partenaire linguistique (HelloTalk, Tandem).</p>
+                            <p>Révision du vocabulaire appris (Anki, Quizlet).</p>
+                            <div class="mt-4 p-3 bg-emerald-50 border border-emerald-200 rounded-md">
+                                <h4 class="font-semibold text-emerald-700 mb-2">✨ Lanceur de Conversation (IA)</h4>
+                                <p class="text-sm text-emerald-600 mb-2">Entrez un sujet (optionnel) ou demandez des suggestions pour démarrer une conversation.</p>
+                                <input type="text" class="w-full p-2 border border-stone-300 rounded-md mb-2" placeholder="Sujet (optionnel), ex: travel, technology">
+                                <button class="gemini-convo-button bg-emerald-500 hover:bg-emerald-600 text-white font-semibold py-2 px-4 rounded-md transition w-full sm:w-auto">
+                                    Suggérer des points de discussion
+                                </button>
+                                <div class="gemini-response-area mt-2 text-sm"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-6 p-4 bg-amber-50 border border-amber-200 rounded-md">
+                    <h3 class="text-lg font-semibold text-amber-700 mb-2">📚 Ressources Clés (Semaines 1-2) :</h3>
+                    <ul class="list-disc list-inside text-stone-700 space-y-1">
+                        <li>Grammaire: *Cambridge English Grammar in Use (Intermediate to Upper-Intermediate)* de Raymond Murphy.</li>
+                        <li>Applications: HelloTalk, Tandem, Anki, Quizlet, Grammarly, Speechling.</li>
+                        <li>Chaînes YouTube: <a href="https://www.youtube.com/c/EnglishwithLucy" target="_blank" class="text-sky-600 hover:underline">English with Lucy</a>, <a href="https://www.engvid.com/" target="_blank" class="text-sky-600 hover:underline">EngVid</a>.</li>
+                    </ul>
+                </div>
+            </section>
+
+            <section id="weeks3-4" class="tab-content p-6 bg-white rounded-lg shadow" data-level-text="B2">
+                <h2 class="text-2xl font-semibold text-teal-700 mb-4">Semaines 3-4 : Maîtrise B2</h2>
+                <p class="mb-4 text-stone-700">Durant ces deux semaines, l'objectif est de consolider le niveau B2. Vous travaillerez sur la fluidité de votre expression, même complexe, et commencerez à aborder des contenus académiques et professionnels simples. L'augmentation du volume de vocabulaire se poursuit.</p>
+                <div class="mb-6 p-4 bg-sky-50 border border-sky-200 rounded-md">
+                    <h3 class="text-lg font-semibold text-sky-700 mb-2">🎯 Objectifs des Semaines 3-4 :</h3>
+                    <ul class="list-disc list-inside text-stone-700">
+                        <li>Fluidité dans l'expression complexe.</li>
+                        <li>Compréhension de contenus académiques et professionnels.</li>
+                        <li>Vocabulaire : 250 nouveaux mots par semaine (total 500).</li>
+                    </ul>
+                </div>
+
+                <h3 class="text-xl font-semibold text-teal-600 mb-3">Programme Quotidien (3h/jour)</h3>
+                 <div class="space-y-3">
+                    <div>
+                        <button class="accordion-button w-full text-left p-3 bg-teal-500 text-white rounded-md hover:bg-teal-600 transition flex justify-between items-center">
+                            <span>Heure 1 - Compréhension/Vocabulaire</span>
+                            <span class="transform transition-transform duration-300 ">▼</span>
+                        </button>
+                        <div class="accordion-content bg-stone-50 p-4 rounded-b-md border border-t-0 border-stone-200 text-stone-700 space-y-2">
+                            <p><strong>30min :</strong> Lecture de textes académiques (articles scientifiques vulgarisés, rapports). Ex: <a href="https://newsela.com/" target="_blank" class="text-sky-600 hover:underline">Newsela</a>, <a href="https://theconversation.com/global" target="_blank" class="text-sky-600 hover:underline">The Conversation</a>.</p>
+                            <p><strong>20min :</strong> Documentaires en anglais (TED Talks, documentaires BBC, Vox). Ex: <a href="https://www.ted.com/talks" target="_blank" class="text-sky-600 hover:underline">TED Talks</a>, <a href="https://www.youtube.com/c/Vox" target="_blank" class="text-sky-600 hover:underline">Vox YouTube</a>.</p>
+                            <p><strong>10min :</strong> Vocabulaire spécialisé par domaines (business, science, culture).</p>
+                            <div class="mt-4 p-3 bg-emerald-50 border border-emerald-200 rounded-md">
+                                <h4 class="font-semibold text-emerald-700 mb-2">✨ Assistant Vocabulaire (IA)</h4>
+                                <p class="text-sm text-emerald-600 mb-2">Entrez des mots nouveaux (séparés par des virgules) pour obtenir des exemples et explications.</p>
+                                <textarea class="w-full p-2 border border-stone-300 rounded-md mb-2" rows="2" placeholder="Ex: relevant, analyze, structure"></textarea>
+                                <button class="gemini-vocab-button bg-emerald-500 hover:bg-emerald-600 text-white font-semibold py-2 px-4 rounded-md transition w-full sm:w-auto">
+                                    Obtenir de l'aide avec ces mots
+                                </button>
+                                <div class="gemini-response-area mt-2 text-sm"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div>
+                        <button class="accordion-button w-full text-left p-3 bg-teal-500 text-white rounded-md hover:bg-teal-600 transition flex justify-between items-center">
+                            <span>Heure 2 - Expression</span>
+                            <span class="transform transition-transform duration-300 ">▼</span>
+                        </button>
+                        <div class="accordion-content bg-stone-50 p-4 rounded-b-md border border-t-0 border-stone-200 text-stone-700 space-y-2">
+                            <p><strong>30min :</strong> Rédaction structurée (essais argumentatifs, analyses). Sujets: "Advantages/disadvantages of social media".</p>
+                            <p><strong>20min :</strong> Débats et discussions enregistrées (solo ou avec partenaire).</p>
+                            <p><strong>10min :</strong> Grammaire avancée (subjonctif, conditionnels complexes). Livre: *Advanced Grammar in Use*. Sujets: Modals, Reported Speech, Conditionals (Types 0-3), Relative Clauses.</p>
+                        </div>
+                    </div>
+                    <div>
+                        <button class="accordion-button w-full text-left p-3 bg-teal-500 text-white rounded-md hover:bg-teal-600 transition flex justify-between items-center">
+                            <span>Heure 3 - Pratique ciblée</span>
+                            <span class="transform transition-transform duration-300 ">▼</span>
+                        </button>
+                        <div class="accordion-content bg-stone-50 p-4 rounded-b-md border border-t-0 border-stone-200 text-stone-700 space-y-2">
+                            <p>Simulation d'examens B2 (IELTS, TOEFL sections Reading/Listening). <a href="https://www.ielts.org/prepare/free-ielts-practice-tests" target="_blank" class="text-sky-600 hover:underline">IELTS practice</a>, <a href="https://www.ets.org/toefl/test-takers/ibt/prepare/practice-tests.html" target="_blank" class="text-sky-600 hover:underline">TOEFL practice</a>.</p>
+                            <p>Analyse de films/séries avec sous-titres anglais (The Crown, Sherlock).</p>
+                            <p>Exercices de paraphrase et reformulation.</p>
+                             <div class="mt-4 p-3 bg-emerald-50 border border-emerald-200 rounded-md">
+                                <h4 class="font-semibold text-emerald-700 mb-2">✨ Lanceur de Conversation (IA)</h4>
+                                <p class="text-sm text-emerald-600 mb-2">Entrez un sujet (optionnel) ou demandez des suggestions pour démarrer une conversation.</p>
+                                <input type="text" class="w-full p-2 border border-stone-300 rounded-md mb-2" placeholder="Sujet (optionnel), ex: current events, hobbies">
+                                <button class="gemini-convo-button bg-emerald-500 hover:bg-emerald-600 text-white font-semibold py-2 px-4 rounded-md transition w-full sm:w-auto">
+                                    Suggérer des points de discussion
+                                </button>
+                                <div class="gemini-response-area mt-2 text-sm"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-6 p-4 bg-amber-50 border border-amber-200 rounded-md">
+                    <h3 class="text-lg font-semibold text-amber-700 mb-2">📚 Ressources Clés (Semaines 3-4) :</h3>
+                    <ul class="list-disc list-inside text-stone-700 space-y-1">
+                        <li>Grammaire: *Advanced Grammar in Use* de Martin Hewings (Cambridge).</li>
+                        <li>Sites: TED Talks, Newsela, The Conversation, sites d'entraînement IELTS/TOEFL.</li>
+                        <li>Films/séries: The Crown, Sherlock, documentaires Netflix.</li>
+                    </ul>
+                </div>
+            </section>
+
+            <section id="weeks5-6" class="tab-content p-6 bg-white rounded-lg shadow" data-level-text="B2 vers C1">
+                <h2 class="text-2xl font-semibold text-teal-700 mb-4">Semaines 5-6 : Transition B2 → C1</h2>
+                <p class="mb-4 text-stone-700">Vous entrez maintenant dans la phase de transition vers le niveau C1. L'accent sera mis sur la compréhension des nuances linguistiques, des registres de langue, ainsi que de l'implicite et des sous-entendus. Le volume de vocabulaire continue d'augmenter significativement.</p>
+                <div class="mb-6 p-4 bg-sky-50 border border-sky-200 rounded-md">
+                    <h3 class="text-lg font-semibold text-sky-700 mb-2">🎯 Objectifs des Semaines 5-6 :</h3>
+                    <ul class="list-disc list-inside text-stone-700">
+                        <li>Nuances linguistiques et registres de langue.</li>
+                        <li>Compréhension implicite et sous-entendus.</li>
+                        <li>Vocabulaire : 300 nouveaux mots par semaine (total 600).</li>
+                    </ul>
+                </div>
+
+                <h3 class="text-xl font-semibold text-teal-600 mb-3">Programme Quotidien (3h/jour)</h3>
+                <div class="space-y-3">
+                     <div>
+                        <button class="accordion-button w-full text-left p-3 bg-teal-500 text-white rounded-md hover:bg-teal-600 transition flex justify-between items-center">
+                            <span>Heure 1 - Compréhension/Vocabulaire</span>
+                            <span class="transform transition-transform duration-300 ">▼</span>
+                        </button>
+                        <div class="accordion-content bg-stone-50 p-4 rounded-b-md border border-t-0 border-stone-200 text-stone-700 space-y-2">
+                            <p><strong>30min :</strong> Littérature contemporaine (nouvelles, extraits de romans - Kazuo Ishiguro, Margaret Atwood).</p>
+                            <p><strong>20min :</strong> Podcasts complexes (This American Life, Radiolab, The Daily).
+                                <a href="https://www.thisamericanlife.org/" target="_blank" class="text-sky-600 hover:underline ml-1">This American Life</a>,
+                                <a href="https://radiolab.org/podcast" target="_blank" class="text-sky-600 hover:underline ml-1">Radiolab</a>,
+                                <a href="https://www.nytimes.com/column/the-daily" target="_blank" class="text-sky-600 hover:underline ml-1">The Daily</a>.
+                            </p>
+                            <p><strong>10min :</strong> Idiomes, expressions idiomatiques, phrasal verbs avancés. Ex: <a href="https://www.theidioms.com/" target="_blank" class="text-sky-600 hover:underline">The Idioms</a>.</p>
+                            <div class="mt-4 p-3 bg-emerald-50 border border-emerald-200 rounded-md">
+                                <h4 class="font-semibold text-emerald-700 mb-2">✨ Assistant Vocabulaire (IA)</h4>
+                                <p class="text-sm text-emerald-600 mb-2">Entrez des mots nouveaux (séparés par des virgules) pour obtenir des exemples et explications.</p>
+                                <textarea class="w-full p-2 border border-stone-300 rounded-md mb-2" rows="2" placeholder="Ex: nuanced, implicit, subtle"></textarea>
+                                <button class="gemini-vocab-button bg-emerald-500 hover:bg-emerald-600 text-white font-semibold py-2 px-4 rounded-md transition w-full sm:w-auto">
+                                    Obtenir de l'aide avec ces mots
+                                </button>
+                                <div class="gemini-response-area mt-2 text-sm"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div>
+                        <button class="accordion-button w-full text-left p-3 bg-teal-500 text-white rounded-md hover:bg-teal-600 transition flex justify-between items-center">
+                            <span>Heure 2 - Expression</span>
+                            <span class="transform transition-transform duration-300 ">▼</span>
+                        </button>
+                        <div class="accordion-content bg-stone-50 p-4 rounded-b-md border border-t-0 border-stone-200 text-stone-700 space-y-2">
+                            <p><strong>30min :</strong> Rédaction créative et académique.</p>
+                            <p><strong>20min :</strong> Présentations formelles enregistrées (5-7 minutes).</p>
+                            <p><strong>10min :</strong> Grammaire de niveau C1 (inversions, structures emphatiques). Livre: *Advanced Grammar in Use*. Sujets: Inversion, Emphatic structures, Participle clauses, Advanced articles/prepositions.</p>
+                        </div>
+                    </div>
+                    <div>
+                        <button class="accordion-button w-full text-left p-3 bg-teal-500 text-white rounded-md hover:bg-teal-600 transition flex justify-between items-center">
+                            <span>Heure 3 - Pratique ciblée</span>
+                            <span class="transform transition-transform duration-300 ">▼</span>
+                        </button>
+                        <div class="accordion-content bg-stone-50 p-4 rounded-b-md border border-t-0 border-stone-200 text-stone-700 space-y-2">
+                            <p>Analyse critique de textes (éditoriaux, articles d'opinion).</p>
+                            <p>Débats sur sujets complexes (éthique, politique, société).</p>
+                            <p>Exercices de synthèse et d'analyse.</p>
+                            <div class="mt-4 p-3 bg-emerald-50 border border-emerald-200 rounded-md">
+                                <h4 class="font-semibold text-emerald-700 mb-2">✨ Lanceur de Conversation (IA)</h4>
+                                <p class="text-sm text-emerald-600 mb-2">Entrez un sujet (optionnel) ou demandez des suggestions pour démarrer une conversation.</p>
+                                <input type="text" class="w-full p-2 border border-stone-300 rounded-md mb-2" placeholder="Sujet (optionnel), ex: ethics in AI, societal changes">
+                                <button class="gemini-convo-button bg-emerald-500 hover:bg-emerald-600 text-white font-semibold py-2 px-4 rounded-md transition w-full sm:w-auto">
+                                    Suggérer des points de discussion
+                                </button>
+                                <div class="gemini-response-area mt-2 text-sm"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-6 p-4 bg-amber-50 border border-amber-200 rounded-md">
+                    <h3 class="text-lg font-semibold text-amber-700 mb-2">📚 Ressources Clés (Semaines 5-6) :</h3>
+                    <ul class="list-disc list-inside text-stone-700 space-y-1">
+                        <li>Livres: Romans de Kazuo Ishiguro, Margaret Atwood.</li>
+                        <li>Podcasts: This American Life, Radiolab, The New Yorker Radio Hour, Philosophy Talk.</li>
+                        <li>Dictionnaires: Oxford Collocations Dictionary, Cambridge Advanced Learner's Dictionary.</li>
+                    </ul>
+                </div>
+            </section>
+
+            <section id="weeks7-8" class="tab-content p-6 bg-white rounded-lg shadow" data-level-text="C1">
+                <h2 class="text-2xl font-semibold text-teal-700 mb-4">Semaines 7-8 : Consolidation C1</h2>
+                <p class="mb-4 text-stone-700">Les deux dernières semaines sont dédiées à la consolidation du niveau C1. L'objectif est d'automatiser l'utilisation des structures complexes, d'atteindre un haut degré de précision et de spontanéité dans votre expression, et d'enrichir encore votre vocabulaire académique et technique.</p>
+                <div class="mb-6 p-4 bg-sky-50 border border-sky-200 rounded-md">
+                    <h3 class="text-lg font-semibold text-sky-700 mb-2">🎯 Objectifs des Semaines 7-8 :</h3>
+                    <ul class="list-disc list-inside text-stone-700">
+                        <li>Automatisation des structures C1.</li>
+                        <li>Précision et spontanéité.</li>
+                        <li>Vocabulaire : 350 nouveaux mots par semaine (total 700).</li>
+                    </ul>
+                </div>
+
+                <h3 class="text-xl font-semibold text-teal-600 mb-3">Programme Quotidien (3h/jour)</h3>
+                <div class="space-y-3">
+                    <div>
+                        <button class="accordion-button w-full text-left p-3 bg-teal-500 text-white rounded-md hover:bg-teal-600 transition flex justify-between items-center">
+                            <span>Heure 1 - Compréhension/Vocabulaire</span>
+                            <span class="transform transition-transform duration-300 ">▼</span>
+                        </button>
+                        <div class="accordion-content bg-stone-50 p-4 rounded-b-md border border-t-0 border-stone-200 text-stone-700 space-y-2">
+                            <p><strong>30min :</strong> Presse spécialisée (The Economist, Scientific American, Harvard Business Review).
+                                <a href="https://www.economist.com/" target="_blank" class="text-sky-600 hover:underline ml-1">The Economist</a>,
+                                <a href="https://www.scientificamerican.com/" target="_blank" class="text-sky-600 hover:underline ml-1">Sci American</a>,
+                                <a href="https://hbr.org/" target="_blank" class="text-sky-600 hover:underline ml-1">HBR</a>.
+                            </p>
+                            <p><strong>20min :</strong> Conférences académiques et professionnelles (Coursera, edX, Gresham College).
+                                <a href="https://www.gresham.ac.uk/watch" target="_blank" class="text-sky-600 hover:underline ml-1">Gresham</a>.
+                            </p>
+                            <p><strong>10min :</strong> Vocabulaire académique et technique (Academic Word List - AWL).
+                                <a href="https://www.wgtn.ac.nz/lals/resources/academicwordlist" target="_blank" class="text-sky-600 hover:underline ml-1">AWL</a>.
+                            </p>
+                             <div class="mt-4 p-3 bg-emerald-50 border border-emerald-200 rounded-md">
+                                <h4 class="font-semibold text-emerald-700 mb-2">✨ Assistant Vocabulaire (IA)</h4>
+                                <p class="text-sm text-emerald-600 mb-2">Entrez des mots nouveaux (séparés par des virgules) pour obtenir des exemples et explications.</p>
+                                <textarea class="w-full p-2 border border-stone-300 rounded-md mb-2" rows="2" placeholder="Ex: articulate, proficient, comprehensive"></textarea>
+                                <button class="gemini-vocab-button bg-emerald-500 hover:bg-emerald-600 text-white font-semibold py-2 px-4 rounded-md transition w-full sm:w-auto">
+                                    Obtenir de l'aide avec ces mots
+                                </button>
+                                <div class="gemini-response-area mt-2 text-sm"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div>
+                        <button class="accordion-button w-full text-left p-3 bg-teal-500 text-white rounded-md hover:bg-teal-600 transition flex justify-between items-center">
+                            <span>Heure 2 - Expression</span>
+                            <span class="transform transition-transform duration-300 ">▼</span>
+                        </button>
+                        <div class="accordion-content bg-stone-50 p-4 rounded-b-md border border-t-0 border-stone-200 text-stone-700 space-y-2">
+                            <p><strong>30min :</strong> Rédaction de niveau universitaire/professionnel (rapports, propositions, essais critiques).</p>
+                            <p><strong>20min :</strong> Conversations formelles et informelles fluides (avec partenaires, groupes de discussion).</p>
+                            <p><strong>10min :</strong> Perfectionnement grammatical (nuances stylistiques, choix du mot juste). Guides de style comme *The Elements of Style*.</p>
+                        </div>
+                    </div>
+                    <div>
+                        <button class="accordion-button w-full text-left p-3 bg-teal-500 text-white rounded-md hover:bg-teal-600 transition flex justify-between items-center">
+                            <span>Heure 3 - Pratique ciblée</span>
+                            <span class="transform transition-transform duration-300 ">▼</span>
+                        </button>
+                        <div class="accordion-content bg-stone-50 p-4 rounded-b-md border border-t-0 border-stone-200 text-stone-700 space-y-2">
+                            <p>Simulation d'examens C1 (CAE Cambridge). <a href="https://www.cambridgeenglish.org/exams-and-tests/advanced/preparation/" target="_blank" class="text-sky-600 hover:underline">CAE Prep</a>.</p>
+                            <p>Projets créatifs (écriture, présentations).</p>
+                            <p>Autoévaluation et correction d'erreurs récurrentes.</p>
+                            <div class="mt-4 p-3 bg-emerald-50 border border-emerald-200 rounded-md">
+                                <h4 class="font-semibold text-emerald-700 mb-2">✨ Lanceur de Conversation (IA)</h4>
+                                <p class="text-sm text-emerald-600 mb-2">Entrez un sujet (optionnel) ou demandez des suggestions pour démarrer une conversation.</p>
+                                <input type="text" class="w-full p-2 border border-stone-300 rounded-md mb-2" placeholder="Sujet (optionnel), ex: global issues, future of work">
+                                <button class="gemini-convo-button bg-emerald-500 hover:bg-emerald-600 text-white font-semibold py-2 px-4 rounded-md transition w-full sm:w-auto">
+                                    Suggérer des points de discussion
+                                </button>
+                                <div class="gemini-response-area mt-2 text-sm"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-6 p-4 bg-amber-50 border border-amber-200 rounded-md">
+                    <h3 class="text-lg font-semibold text-amber-700 mb-2">📚 Ressources Clés (Semaines 7-8) :</h3>
+                    <ul class="list-disc list-inside text-stone-700 space-y-1">
+                        <li>Presse/Magazines: The Economist, Scientific American, Harvard Business Review.</li>
+                        <li>Plateformes de cours: Coursera, edX.</li>
+                        <li>Dictionnaires: Cambridge Advanced Learner's Dictionary, Oxford Advanced Learner's Dictionary.</li>
+                        <li>Tests: Matériel de préparation au CAE (C1 Advanced).</li>
+                    </ul>
+                </div>
+            </section>
+
+            <section id="planning" class="tab-content p-6 bg-white rounded-lg shadow">
+                <h2 class="text-2xl font-semibold text-teal-700 mb-4">🗓️ Planning Hebdomadaire Type</h2>
+                <p class="mb-4 text-stone-700">Voici un exemple de planning hebdomadaire pour vous aider à structurer vos semaines. Adaptez-le en fonction de vos préférences et de vos contraintes, tout en veillant à couvrir tous les aspects du programme.</p>
+                <div class="overflow-x-auto rounded-lg border border-stone-200">
+                    <table class="w-full min-w-max text-sm text-left text-stone-700">
+                        <thead class="text-xs text-teal-700 uppercase bg-stone-200">
+                            <tr>
+                                <th scope="col" class="px-6 py-3">Jour</th>
+                                <th scope="col" class="px-6 py-3">Focus principal</th>
+                                <th scope="col" class="px-6 py-3">Activité spéciale</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="bg-white border-b border-stone-200 hover:bg-stone-50">
+                                <td class="px-6 py-4 font-medium text-stone-900">Lundi</td>
+                                <td class="px-6 py-4">Grammaire nouvelle</td>
+                                <td class="px-6 py-4">Test vocabulaire</td>
+                            </tr>
+                            <tr class="bg-white border-b border-stone-200 hover:bg-stone-50">
+                                <td class="px-6 py-4 font-medium text-stone-900">Mardi</td>
+                                <td class="px-6 py-4">Compréhension écrite</td>
+                                <td class="px-6 py-4">Lecture intensive</td>
+                            </tr>
+                            <tr class="bg-white border-b border-stone-200 hover:bg-stone-50">
+                                <td class="px-6 py-4 font-medium text-stone-900">Mercredi</td>
+                                <td class="px-6 py-4">Expression écrite</td>
+                                <td class="px-6 py-4">Rédaction chronométrée</td>
+                            </tr>
+                            <tr class="bg-white border-b border-stone-200 hover:bg-stone-50">
+                                <td class="px-6 py-4 font-medium text-stone-900">Jeudi</td>
+                                <td class="px-6 py-4">Compréhension orale</td>
+                                <td class="px-6 py-4">Podcasts/vidéos</td>
+                            </tr>
+                            <tr class="bg-white border-b border-stone-200 hover:bg-stone-50">
+                                <td class="px-6 py-4 font-medium text-stone-900">Vendredi</td>
+                                <td class="px-6 py-4">Expression orale</td>
+                                <td class="px-6 py-4">Enregistrement évaluation</td>
+                            </tr>
+                            <tr class="bg-white border-b border-stone-200 hover:bg-stone-50">
+                                <td class="px-6 py-4 font-medium text-stone-900">Samedi</td>
+                                <td class="px-6 py-4">Révision générale</td>
+                                <td class="px-6 py-4">Pratique libre</td>
+                            </tr>
+                            <tr class="bg-white hover:bg-stone-50">
+                                <td class="px-6 py-4 font-medium text-stone-900">Dimanche</td>
+                                <td class="px-6 py-4">Planification</td>
+                                <td class="px-6 py-4">Bilan et ajustements</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                 <p class="mt-4 text-sm text-stone-600">*N'oubliez pas d'intégrer les 15 (ou plus) nouveaux mots quotidiens dans votre session Anki/Quizlet, idéalement répartis ou en une session dédiée.</p>
+            </section>
+
+            <section id="evaluation" class="tab-content p-6 bg-white rounded-lg shadow">
+                <h2 class="text-2xl font-semibold text-teal-700 mb-4">📊 Évaluation Hebdomadaire</h2>
+                <p class="mb-4 text-stone-700">L'évaluation régulière de vos progrès est essentielle pour identifier vos points forts, vos faiblesses, et ajuster votre apprentissage. Voici le plan d'évaluation hebdomadaire suggéré :</p>
+                <ul class="list-disc list-inside space-y-3 text-stone-700">
+                    <li>
+                        <strong>Lundi : Test de vocabulaire (50 mots)</strong>
+                        <p class="text-sm text-stone-600 ml-4">Utilisez Anki/Quizlet pour tester les mots des semaines précédentes. Visez un score élevé.</p>
+                    </li>
+                    <li>
+                        <strong>Mercredi : Expression écrite chronométrée (30 min)</strong>
+                        <p class="text-sm text-stone-600 ml-4">Choisissez un sujet type examen (IELTS Writing Task 2, CAE Essay). Rédigez sous contrainte de temps. Auto-évaluez-vous ou demandez un retour à un partenaire.</p>
+                    </li>
+                    <li>
+                        <strong>Vendredi : Expression orale enregistrée (15 min)</strong>
+                        <p class="text-sm text-stone-600 ml-4">Choisissez un sujet type examen (IELTS Speaking Part 2 & 3, CAE Speaking). Enregistrez-vous. Écoutez et notez les points à améliorer.</p>
+                    </li>
+                    <li>
+                        <strong>Dimanche : Bilan de la semaine et ajustements</strong>
+                        <p class="text-sm text-stone-600 ml-4">Revoyez vos objectifs de la semaine. Qu'est-ce qui a bien fonctionné ? Qu'est-ce qui était difficile ? Ajustez le programme de la semaine suivante si nécessaire.</p>
+                    </li>
+                </ul>
+            </section>
+        </main>
+
+        <footer class="text-center mt-12 py-6 border-t border-stone-300">
+            <p class="text-sm text-stone-600">© 2024 Votre Plan d'Anglais Interactif. Bon apprentissage !</p>
+        </footer>
+    </div>
+
+    <script>
+        const tabContainer = document.getElementById('tabContainer');
+        const tabContentContainer = document.getElementById('tabContentContainer');
+        const tabButtons = Array.from(tabContainer.querySelectorAll('.tab-button'));
+        const tabContents = tabContentContainer.querySelectorAll('.tab-content');
+        let currentLevel = 'B1+'; 
+
+        function updateCurrentLevel(tabButton) {
+            const level = tabButton.dataset.level;
+            if (level) {
+                currentLevel = level;
+            } else {
+                const activeWeeksTab = tabButtons.find(btn => btn.classList.contains('active') && btn.dataset.level);
+                if (activeWeeksTab) {
+                    currentLevel = activeWeeksTab.dataset.level;
+                } else {
+                    currentLevel = 'B1+'; // Default level if no specific weeks tab is active
+                }
+            }
+        }
+
+
+        tabButtons.forEach(button => {
+            if (button.classList.contains('active')) {
+                const initialTabId = button.getAttribute('data-tab');
+                document.getElementById(initialTabId).classList.add('active');
+                updateCurrentLevel(button);
+            }
+            button.addEventListener('click', () => {
+                const tabId = button.getAttribute('data-tab');
+                updateCurrentLevel(button);
+
+                tabButtons.forEach(btn => {
+                    btn.classList.remove('active', 'text-sky-600', 'border-sky-600');
+                    btn.classList.add('border-transparent', 'hover:text-teal-600', 'hover:border-teal-300');
+                });
+                button.classList.add('active', 'text-sky-600', 'border-sky-600');
+                button.classList.remove('border-transparent', 'hover:text-teal-600', 'hover:border-teal-300');
+
+                tabContents.forEach(content => {
+                    content.classList.remove('active');
+                });
+                const activeContent = document.getElementById(tabId);
+                if (activeContent) {
+                    activeContent.classList.add('active');
+                }
+            });
+        });
+        
+        const accordionButtons = document.querySelectorAll('.accordion-button');
+        accordionButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                const content = button.nextElementSibling;
+                const icon = button.querySelector('span:last-child');
+                
+                button.classList.toggle('open');
+                if (icon) icon.classList.toggle('rotate-180');
+
+                if (content.style.maxHeight) {
+                    content.style.maxHeight = null;
+                } else {
+                    content.style.maxHeight = content.scrollHeight + "px";
+                }
+            });
+        });
+
+        const vocabData = {
+            labels: ['Sem. 1-2', 'Sem. 3-4', 'Sem. 5-6', 'Sem. 7-8'],
+            datasets: [{
+                label: 'Nouveaux mots par semaine (objectif)',
+                data: [200, 250, 300, 350],
+                backgroundColor: [
+                    'rgba(56, 189, 248, 0.6)', 
+                    'rgba(34, 197, 94, 0.6)',  
+                    'rgba(245, 158, 11, 0.6)', 
+                    'rgba(239, 68, 68, 0.6)'   
+                ],
+                borderColor: [
+                    'rgba(56, 189, 248, 1)',
+                    'rgba(34, 197, 94, 1)',
+                    'rgba(245, 158, 11, 1)',
+                    'rgba(239, 68, 68, 1)'
+                ],
+                borderWidth: 1
+            }]
+        };
+
+        const vocabChartCtx = document.getElementById('vocabChart').getContext('2d');
+        new Chart(vocabChartCtx, {
+            type: 'bar',
+            data: vocabData,
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: { beginAtZero: true, title: { display: true, text: 'Nombre de mots'}},
+                    x: { title: {display: true, text: 'Phases du Programme (2 semaines)'}}
+                },
+                plugins: {
+                    legend: { position: 'top' },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                let label = context.dataset.label || '';
+                                if (label) { label += ': '; }
+                                if (context.parsed.y !== null) { label += context.parsed.y + ' mots/semaine'; }
+                                return label;
+                            }
+                        }
+                    }
+                }
+            }
+        });
+
+        const apiKey = ""; 
+        const apiUrlBase = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
+
+        async function callGeminiAPI(prompt, buttonElement, responseArea) {
+            responseArea.innerHTML = '<div class="flex items-center justify-center"><div class="loading-spinner"></div><p>Chargement de la réponse de l\'IA...</p></div>';
+            buttonElement.disabled = true;
+            const originalButtonText = buttonElement.innerHTML;
+            buttonElement.innerHTML = '<div class="loading-spinner !border-white !border-l-transparent"></div> Un instant...';
+
+
+            let chatHistory = [{ role: "user", parts: [{ text: prompt }] }];
+            const payload = { contents: chatHistory };
+
+            try {
+                const response = await fetch(apiUrlBase, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    console.error("API Error Details:", errorData);
+                    throw new Error(`API error: ${response.status} ${response.statusText}. ${errorData?.error?.message || ''}`);
+                }
+
+                const result = await response.json();
+
+                if (result.candidates && result.candidates.length > 0 &&
+                    result.candidates[0].content && result.candidates[0].content.parts &&
+                    result.candidates[0].content.parts.length > 0) {
+                    const text = result.candidates[0].content.parts[0].text;
+                    responseArea.innerHTML = `<div class="gemini-response">${text.replace(/\n/g, '<br>')}</div>`;
+                } else {
+                    console.error("Unexpected API response structure:", result);
+                    let errorMessage = "Désolé, la réponse de l'IA n'a pas pu être traitée. Structure inattendue.";
+                     if (result.promptFeedback && result.promptFeedback.blockReason) {
+                        errorMessage += ` Raison du blocage: ${result.promptFeedback.blockReason}`;
+                        if (result.promptFeedback.safetyRatings) {
+                            errorMessage += ` Détails: ${JSON.stringify(result.promptFeedback.safetyRatings)}`;
+                        }
+                    }
+                    responseArea.innerHTML = `<div class="gemini-response text-red-600">${errorMessage}</div>`;
+                }
+            } catch (error) {
+                console.error('Erreur lors de l\'appel à Gemini API:', error);
+                responseArea.innerHTML = `<div class="gemini-response text-red-600">Désolé, une erreur s'est produite lors de la communication avec l'IA. Veuillez réessayer. (${error.message})</div>`;
+            } finally {
+                buttonElement.disabled = false;
+                buttonElement.innerHTML = originalButtonText;
+                 // Ensure accordion resizes if content changes height
+                const accordionContent = responseArea.closest('.accordion-content');
+                if (accordionContent && accordionContent.style.maxHeight && accordionContent.style.maxHeight !== '0px') {
+                    accordionContent.style.maxHeight = accordionContent.scrollHeight + "px";
+                }
+            }
+        }
+
+        document.querySelectorAll('.gemini-vocab-button').forEach(button => {
+            button.addEventListener('click', () => {
+                const parentAccordionContent = button.closest('.accordion-content');
+                const wordsTextarea = parentAccordionContent.querySelector('textarea');
+                const responseArea = parentAccordionContent.querySelector('.gemini-response-area');
+                const words = wordsTextarea.value.trim();
+                
+                const activeTabElement = button.closest('.tab-content');
+                const level = activeTabElement ? activeTabElement.dataset.levelText : 'B1+';
+
+
+                if (!words) {
+                    responseArea.innerHTML = "<div class='gemini-response text-amber-700'>Veuillez entrer des mots à expliquer.</div>";
+                    return;
+                }
+                const prompt = `En tant qu'assistant d'apprentissage de l'anglais, pour un étudiant de niveau ${level}, explique les mots suivants : "${words}". Pour chaque mot, fournis : 1. Une phrase d'exemple claire en anglais. 2. Une brève définition ou explication de son usage/nuance en français. Formate ta réponse de manière claire et facile à lire, en utilisant des titres ou des listes si nécessaire.`;
+                callGeminiAPI(prompt, button, responseArea);
+            });
+        });
+
+        document.querySelectorAll('.gemini-convo-button').forEach(button => {
+            button.addEventListener('click', () => {
+                const parentAccordionContent = button.closest('.accordion-content');
+                const topicInput = parentAccordionContent.querySelector('input[type="text"]');
+                const responseArea = parentAccordionContent.querySelector('.gemini-response-area');
+                const topic = topicInput.value.trim();
+
+                const activeTabElement = button.closest('.tab-content');
+                const level = activeTabElement ? activeTabElement.dataset.levelText : 'B1+';
+
+                let prompt;
+                if (topic) {
+                    prompt = `En tant qu'assistant d'apprentissage de l'anglais, pour un étudiant de niveau ${level}, génère 3 à 4 questions de discussion ou amorces de conversation en anglais sur le sujet : "${topic}". Les questions doivent encourager l'expression orale et être formulées de manière naturelle.`;
+                } else {
+                    prompt = `En tant qu'assistant d'apprentissage de l'anglais, pour un étudiant de niveau ${level}, suggère 3 sujets de conversation variés et intéressants en anglais. Pour chaque sujet, fournis une ou deux questions pour initier la discussion. Les sujets et questions doivent encourager l'expression orale et être formulés de manière naturelle.`;
+                }
+                callGeminiAPI(prompt, button, responseArea);
+            });
+        });
+
+    </script>
+</body>
+</html>
